@@ -1,6 +1,6 @@
 # OpenHero AI 🦸‍♂️
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/your-netlify-id/deploy-status)](https://app.netlify.com/sites/your-site-name/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/your-netlify-site-id/deploy-status)](https://app.netlify.com/sites/openheroai/deploys)
 
 An open-source platform where users can upload their images and transform them with iconic superhero masks from a selection of the top 20 superheroes, including Batman, Spider-Man, Superman, and many more. Powered by Google's Gemini AI for stunning image transformations that preserve your original background and lighting.
 
@@ -28,7 +28,7 @@ An open-source platform where users can upload their images and transform them w
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/openheroai.git
+git clone https://github.com/prateektomar123/OpenHeroAI.git
 cd openheroai
 ```
 
@@ -70,11 +70,11 @@ npm run dev
 
 ## 🎮 Live Demo
 
-Try it out live at: [Your Netlify URL](https://your-site-name.netlify.app)
+Try it out live at: [https://openheroai.netlify.app/](https://openheroai.netlify.app/)
 
 ## 📸 Screenshots
 
-*Coming soon - Add screenshots of your app in action!*
+_Coming soon - Add screenshots of your app in action!_
 
 ## 🏗️ Tech Stack
 
@@ -129,6 +129,7 @@ No environment variables are required for basic functionality. Users configure t
 We welcome contributions! Here's how you can help:
 
 ### Getting Started
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
@@ -136,12 +137,14 @@ We welcome contributions! Here's how you can help:
 5. Open a Pull Request
 
 ### Development Setup
+
 ```bash
 npm install
 npm run dev
 ```
 
 ### Areas for Contribution
+
 - 🦸‍♂️ **New Superheroes**: Add more superhero options
 - 🎨 **UI/UX Improvements**: Enhance the user interface
 - ⚡ **Performance**: Optimize loading and processing times
@@ -150,6 +153,7 @@ npm run dev
 - 🧪 **Testing**: Add unit and integration tests
 
 ### Guidelines
+
 - Follow the existing code style
 - Add comments for complex logic
 - Test your changes thoroughly
@@ -158,6 +162,7 @@ npm run dev
 ## 🗺️ Roadmap
 
 ### ✅ Completed Features
+
 - [x] Core AI image transformation functionality
 - [x] 20 superhero options
 - [x] Responsive design for all devices
@@ -166,11 +171,13 @@ npm run dev
 - [x] Netlify deployment ready
 
 ### 🚧 In Progress
+
 - [ ] Add more superhero options
 - [ ] Implement user accounts and image history
 - [ ] Add batch processing for multiple images
 
 ### 🔮 Future Plans
+
 - [ ] Mobile app versions (React Native)
 - [ ] Advanced customization options
 - [ ] Integration with other AI models
@@ -189,7 +196,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support & Connect
 
-- **GitHub Issues**: [Create an issue](https://github.com/yourusername/openheroai/issues) for bug reports and feature requests
+- **GitHub Issues**: [Create an issue](https://github.com/prateektomar123/OpenHeroAI/issues) for bug reports and feature requests
 - **Connect on X**: [@theprateektomar](https://x.com/theprateektomar) - Let's connect and discuss AI, development, and superhero transformations!
 
 ---
