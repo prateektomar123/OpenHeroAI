@@ -1,0 +1,71 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="tridentGlow" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#FFA500;stop-opacity:0.8" />
+      <stop offset="80%" style="stop-color:#FF8C00;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0.2" />
+    </radialGradient>
+    <linearGradient id="tridentMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="waterEffect" cx="50%" cy="60%" r="80%">
+      <stop offset="0%" style="stop-color:#00CED1;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#48D1CC;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#20B2AA;stop-opacity:0.2" />
+    </radialGradient>
+  </defs>
+
+  <!-- Trident main shaft -->
+  <rect x="30" y="8" width="4" height="44" rx="1" fill="url(#tridentMetal)"/>
+  <rect x="31" y="10" width="2" height="40" rx="0.5" fill="#000000" opacity="0.4"/>
+  <rect x="31.5" y="12" width="1" height="36" rx="0.5" fill="url(#tridentMetal)"/>
+
+  <!-- Trident upper prongs -->
+  <path d="M26 12L38 12L36 16L34 20L32 18L30 20L28 16L26 12Z" fill="url(#tridentMetal)"/>
+  <path d="M27 13L37 13L35 16L33 19L32 17L31 19L29 16L27 13Z" fill="#000000" opacity="0.3"/>
+  <path d="M28 14L36 14L34 17L32 18L30 17L28 14Z" fill="url(#tridentMetal)"/>
+
+  <!-- Trident middle prongs -->
+  <path d="M22 20L42 20L40 24L38 28L36 32L32 30L28 32L26 28L24 24L22 20Z" fill="url(#tridentMetal)"/>
+  <path d="M24 22L40 22L38 25L36 29L34 32L32 30L30 32L28 29L26 25L24 22Z" fill="#000000" opacity="0.3"/>
+  <path d="M26 24L38 24L36 27L34 30L32 28L30 30L28 27L26 24Z" fill="url(#tridentMetal)"/>
+
+  <!-- Trident lower prongs -->
+  <path d="M18 32L46 32L44 36L42 40L40 44L32 42L24 44L22 40L20 36L18 32Z" fill="url(#tridentMetal)"/>
+  <path d="M20 34L44 34L42 37L40 41L38 44L32 42L26 44L24 41L22 37L20 34Z" fill="#000000" opacity="0.3"/>
+  <path d="M22 36L42 36L40 39L38 42L36 44L32 42L28 44L26 42L24 39L22 36Z" fill="url(#tridentMetal)"/>
+
+  <!-- Trident tip jewel -->
+  <circle cx="32" cy="10" r="2.5" fill="url(#tridentGlow)"/>
+  <circle cx="32" cy="10" r="1.5" fill="#000000" opacity="0.4"/>
+  <circle cx="32" cy="10" r="0.8" fill="url(#tridentGlow)"/>
+  <circle cx="32" cy="10" r="0.3" fill="#FFFFFF"/>
+
+  <!-- Trident base decoration -->
+  <circle cx="32" cy="50" r="3.5" fill="url(#tridentMetal)"/>
+  <circle cx="32" cy="50" r="2" fill="#000000" opacity="0.4"/>
+  <circle cx="32" cy="50" r="1" fill="url(#tridentMetal)"/>
+  <path d="M28 48L36 48L34 52L32 56L30 52L28 48Z" fill="#008B8B"/>
+  <path d="M29 49L35 49L33 52L32 54L31 52L29 49Z" fill="#48D1CC" opacity="0.8"/>
+
+  <!-- Water effect particles -->
+  <circle cx="20" cy="25" r="1" fill="url(#waterEffect)" opacity="0.6"/>
+  <circle cx="44" cy="30" r="0.8" fill="url(#waterEffect)" opacity="0.5"/>
+  <circle cx="16" cy="40" r="1.2" fill="url(#waterEffect)" opacity="0.7"/>
+  <circle cx="48" cy="35" r="0.9" fill="url(#waterEffect)" opacity="0.4"/>
+  <circle cx="24" cy="50" r="0.7" fill="url(#waterEffect)" opacity="0.6"/>
+  <circle cx="40" cy="45" r="1" fill="url(#waterEffect)" opacity="0.5"/>
+
+  <!-- Atlantean runes/symbols -->
+  <rect x="30" y="16" width="4" height="1" fill="#FFD700" opacity="0.8"/>
+  <rect x="30" y="24" width="4" height="1" fill="#FFD700" opacity="0.8"/>
+  <rect x="30" y="32" width="4" height="1" fill="#FFD700" opacity="0.8"/>
+  <rect x="30" y="40" width="4" height="1" fill="#FFD700" opacity="0.8"/>
+
+  <!-- Trident highlights -->
+  <rect x="30" y="12" width="1" height="36" fill="#FFFFFF" opacity="0.4"/>
+  <rect x="33" y="12" width="1" height="36" fill="#FFFFFF" opacity="0.2"/>
+</svg>

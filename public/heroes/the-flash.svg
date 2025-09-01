@@ -1,0 +1,52 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="flashCore" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#FFA500;stop-opacity:0.9" />
+      <stop offset="70%" style="stop-color:#FF8C00;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0.3" />
+    </radialGradient>
+    <radialGradient id="flashGlow" cx="30%" cy="30%" r="80%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:0.2" />
+    </radialGradient>
+    <linearGradient id="lightningBolt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Main lightning bolt silhouette -->
+  <path d="M30 8L34 8L30 20L38 20L22 40L30 28L18 28L34 48L26 48L34 36L22 36L38 56L30 56L34 44L26 44L34 56L38 56L30 44L38 56L42 56L26 32L42 32L30 16L38 16L34 8L42 8L34 24L46 24L30 4L38 4L34 16L42 16L26 0L34 0L30 12L38 12L22 0L30 0L34 12L26 12L34 24L22 24L38 44L30 44L34 56L26 56L34 44L22 44L38 56L34 56L30 44L38 44L22 32L38 32L26 16L34 16L30 8L38 8L22 0L30 0L34 12L26 12L34 24L22 24L38 44L30 44L34 56L26 56L34 44L22 44L38 56L34 56Z" fill="url(#lightningBolt)"/>
+
+  <!-- Motion blur effects -->
+  <path d="M32 8L36 8L32 20L40 20L24 40L32 28L20 28L36 48L28 48L36 36L24 36L40 56L32 56L36 44L28 44L36 56L40 56L32 44L40 56L44 56L28 32L44 32L32 16L40 16L36 8L44 8L36 24L48 24L32 4L40 4L36 16L44 16L28 0L36 0L32 12L40 12L24 0L32 0L36 12L28 12L36 24L24 24L40 44L32 44L36 56L28 56L36 44L24 44L40 56L36 56L32 44L40 44L24 32L40 32L28 16L36 16L32 8L40 8L24 0L32 0L36 12L28 12L36 24L24 24L40 44L32 44L36 56L28 56L36 44L24 44L40 56L36 56Z" fill="url(#flashGlow)" opacity="0.4"/>
+  <path d="M34 8L38 8L34 20L42 20L26 40L34 28L22 28L38 48L30 48L38 36L26 36L42 56L34 56L38 44L30 44L38 56L42 56L34 44L42 56L46 56L30 32L46 32L34 16L42 16L38 8L46 8L38 24L50 24L34 4L42 4L38 16L46 16L30 0L38 0L34 12L42 12L26 0L34 0L38 12L30 12L38 24L26 24L42 44L34 44L38 56L30 56L38 44L26 44L42 56L38 56L34 44L42 44L26 32L42 32L30 16L38 16L34 8L42 8L26 0L34 0L38 12L30 12L38 24L26 24L42 44L34 44L38 56L30 56L38 44L26 44L42 56L38 56Z" fill="#FFFFFF" opacity="0.2"/>
+
+  <!-- Energy particles -->
+  <circle cx="28" cy="12" r="1.5" fill="url(#flashCore)" opacity="0.8"/>
+  <circle cx="40" cy="20" r="1" fill="url(#flashCore)" opacity="0.7"/>
+  <circle cx="24" cy="28" r="1.2" fill="url(#flashCore)" opacity="0.9"/>
+  <circle cx="36" cy="36" r="0.8" fill="url(#flashCore)" opacity="0.6"/>
+  <circle cx="28" cy="44" r="1.5" fill="url(#flashCore)" opacity="0.8"/>
+  <circle cx="44" cy="52" r="1" fill="url(#flashCore)" opacity="0.7"/>
+
+  <!-- Lightning bolt details -->
+  <path d="M32 12L34 16L38 12L34 8L32 12Z" fill="#FFFFFF" opacity="0.6"/>
+  <path d="M28 24L30 28L34 24L30 20L28 24Z" fill="#FFFFFF" opacity="0.6"/>
+  <path d="M36 36L38 40L42 36L38 32L36 36Z" fill="#FFFFFF" opacity="0.6"/>
+  <path d="M30 48L32 52L36 48L32 44L30 48Z" fill="#FFFFFF" opacity="0.6"/>
+
+  <!-- Speed lines -->
+  <line x1="20" y1="16" x2="16" y2="20" stroke="url(#flashCore)" stroke-width="1" opacity="0.5"/>
+  <line x1="44" y1="16" x2="48" y2="20" stroke="url(#flashCore)" stroke-width="1" opacity="0.5"/>
+  <line x1="16" y1="32" x2="12" y2="36" stroke="url(#flashCore)" stroke-width="0.8" opacity="0.4"/>
+  <line x1="48" y1="32" x2="52" y2="36" stroke="url(#flashCore)" stroke-width="0.8" opacity="0.4"/>
+  <line x1="20" y1="48" x2="16" y2="52" stroke="url(#flashCore)" stroke-width="1" opacity="0.5"/>
+  <line x1="44" y1="48" x2="48" y2="52" stroke="url(#flashCore)" stroke-width="1" opacity="0.5"/>
+
+  <!-- Outer glow effect -->
+  <ellipse cx="32" cy="32" rx="34" ry="32" fill="none" stroke="url(#flashGlow)" stroke-width="2" opacity="0.3"/>
+</svg>

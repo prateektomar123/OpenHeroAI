@@ -1,0 +1,60 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="lassoGlow" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:0.4" />
+    </radialGradient>
+    <linearGradient id="tiaraGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lassoRope" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0C0C0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A0A0A0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#808080;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Tiara -->
+  <path d="M20 16L44 16L42 20L38 18L36 22L32 20L28 22L26 18L22 20L20 16Z" fill="url(#tiaraGradient)"/>
+  <path d="M22 18L42 18L40 20L38 22L36 20L34 24L32 22L30 24L28 20L26 22L24 20L22 18Z" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="32" cy="19" r="1.5" fill="url(#lassoGlow)"/>
+  <circle cx="32" cy="19" r="0.8" fill="#FFFFFF"/>
+  <circle cx="32" cy="19" r="0.4" fill="#FFD700"/>
+
+  <!-- W symbol on tiara -->
+  <path d="M28 17L30 19L31 17L32 19L33 17L34 19L36 17" stroke="#000000" stroke-width="0.5" fill="none"/>
+  <path d="M26 15L38 15L36 17L34 15L32 17L30 15L28 17L26 15Z" fill="none" stroke="#FFD700" stroke-width="0.3" opacity="0.8"/>
+
+  <!-- Lasso of Truth - main loop -->
+  <path d="M16 24C12 28 10 36 14 42C18 48 24 50 30 48C36 46 40 40 38 34C36 28 32 24 26 26C20 28 16 24 16 24Z" fill="none" stroke="url(#lassoRope)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M16 24C12 28 10 36 14 42C18 48 24 50 30 48C36 46 40 40 38 34C36 28 32 24 26 26C20 28 16 24 16 24Z" fill="none" stroke="url(#lassoGlow)" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Lasso energy effect -->
+  <path d="M16 24C12 28 10 36 14 42C18 48 24 50 30 48C36 46 40 40 38 34C36 28 32 24 26 26C20 28 16 24 16 24Z" fill="none" stroke="#FFD700" stroke-width="0.5" stroke-linecap="round" opacity="0.6"/>
+  <circle cx="16" cy="24" r="2" fill="url(#lassoGlow)"/>
+  <circle cx="30" cy="48" r="1.5" fill="url(#lassoGlow)"/>
+  <circle cx="38" cy="34" r="1.5" fill="url(#lassoGlow)"/>
+
+  <!-- Lasso handle -->
+  <rect x="14" y="48" width="4" height="12" rx="1" fill="url(#lassoRope)"/>
+  <rect x="15" y="50" width="2" height="10" rx="0.5" fill="#000000" opacity="0.4"/>
+  <rect x="16" y="52" width="1" height="8" rx="0.5" fill="url(#tiaraGradient)"/>
+
+  <!-- Energy particles around lasso -->
+  <circle cx="12" cy="30" r="1" fill="url(#lassoGlow)" opacity="0.7"/>
+  <circle cx="22" cy="50" r="0.8" fill="url(#lassoGlow)" opacity="0.6"/>
+  <circle cx="40" cy="38" r="0.8" fill="url(#lassoGlow)" opacity="0.6"/>
+  <circle cx="18" cy="26" r="0.6" fill="url(#lassoGlow)" opacity="0.8"/>
+  <circle cx="34" cy="46" r="0.6" fill="url(#lassoGlow)" opacity="0.7"/>
+
+  <!-- Star pattern in center -->
+  <polygon points="32,32 33.5,35 37,35 34.3,37.5 35.2,41 32,38.5 28.8,41 29.7,37.5 27,35 30.5,35" fill="url(#lassoGlow)" opacity="0.5"/>
+  <circle cx="32" cy="36" r="0.5" fill="#FFFFFF" opacity="0.8"/>
+
+  <!-- Background circle with subtle pattern -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="url(#tiaraGradient)" stroke-width="0.5" opacity="0.2"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-width="0.3" opacity="0.1"/>
+</svg>
