@@ -41,14 +41,14 @@ class APIKeyManager {
   }
 
   // Store API key securely
-  storeAPIKey(apiKey) {
+  storeAPIKey(apiKey, type = 'gemini') {
     try {
       if (!apiKey) {
         throw new Error('Invalid API key');
       }
 
       const keys = this.getAllAPIKeys();
-      keys.gemini = {
+      keys[type] = {
         key: this.encrypt(apiKey),
         timestamp: Date.now(),
         lastUsed: Date.now()
@@ -63,18 +63,18 @@ class APIKeyManager {
   }
 
   // Retrieve API key
-  getAPIKey() {
+  getAPIKey(type = 'gemini') {
     try {
       const keys = this.getAllAPIKeys();
-      const keyData = keys.gemini;
-      
+      const keyData = keys[type];
+
       if (!keyData || !keyData.key) {
         return null;
       }
 
       // Update last used timestamp
       keyData.lastUsed = Date.now();
-      this.storeAPIKey(this.decrypt(keyData.key));
+      this.storeAPIKey(this.decrypt(keyData.key), type);
 
       return this.decrypt(keyData.key);
     } catch (error) {
@@ -95,16 +95,25 @@ class APIKeyManager {
   }
 
   // Check if API key exists and is valid
-  hasValidAPIKey() {
-    const key = this.getAPIKey();
+  hasValidAPIKey(type = 'gemini') {
+    const key = this.getAPIKey(type);
     return key && key.length > 0;
   }
 
+  // Check if specific API keys exist
+  hasGeminiKey() {
+    return this.hasValidAPIKey('gemini');
+  }
+
+  hasOpenAIKey() {
+    return this.hasValidAPIKey('openai');
+  }
+
   // Remove API key
-  removeAPIKey() {
+  removeAPIKey(type = 'gemini') {
     try {
       const keys = this.getAllAPIKeys();
-      delete keys.gemini;
+      delete keys[type];
       localStorage.setItem(this.storageKey, JSON.stringify(keys));
       return true;
     } catch (error) {
@@ -125,11 +134,11 @@ class APIKeyManager {
   }
 
   // Get API key metadata (last used, timestamp)
-  getAPIKeyMetadata() {
+  getAPIKeyMetadata(type = 'gemini') {
     try {
       const keys = this.getAllAPIKeys();
-      const keyData = keys.gemini;
-      
+      const keyData = keys[type];
+
       if (!keyData) {
         return null;
       }
@@ -147,32 +156,47 @@ class APIKeyManager {
   }
 
   // Validate API key format
-  validateAPIKey(apiKey) {
+  validateAPIKey(apiKey, type = 'gemini') {
     if (!apiKey || typeof apiKey !== 'string') {
       return { valid: false, error: 'API key must be a non-empty string' };
     }
 
-    // Gemini API keys are typically longer
-    if (apiKey.length < 20) {
-      return { valid: false, error: 'Gemini API key must be at least 20 characters long' };
+    const trimmedKey = apiKey.trim();
+    if (trimmedKey.length === 0) {
+      return { valid: false, error: 'API key cannot be empty' };
     }
-    
+
+    if (type === 'gemini') {
+      // Gemini API keys are typically longer
+      if (trimmedKey.length < 20) {
+        return { valid: false, error: 'Gemini API key must be at least 20 characters long' };
+      }
+    } else if (type === 'openai') {
+      // OpenAI API keys typically start with "sk-" and are around 51 characters
+      if (!trimmedKey.startsWith('sk-')) {
+        return { valid: false, error: 'OpenAI API key must start with "sk-"' };
+      }
+      if (trimmedKey.length < 20) {
+        return { valid: false, error: 'OpenAI API key must be at least 20 characters long' };
+      }
+    }
+
     return { valid: true };
   }
 
   // Auto-save API key when user types
-  autoSaveAPIKey(apiKey) {
+  autoSaveAPIKey(apiKey, type = 'gemini') {
     if (apiKey && apiKey.length > 0) {
       // Debounce the save operation
       clearTimeout(this.autoSaveTimeout);
       this.autoSaveTimeout = setTimeout(() => {
-        this.storeAPIKey(apiKey);
+        this.storeAPIKey(apiKey, type);
       }, 1000); // Save after 1 second of no typing
     }
   }
 
   // Test API key connection
-  async testAPIKey(apiKey) {
+  async testAPIKey(apiKey, type = 'gemini') {
     try {
       if (!apiKey || apiKey.trim() === '') {
         return { success: false, message: 'API key is empty' };
@@ -182,31 +206,50 @@ class APIKeyManager {
       console.log('Testing API key length:', trimmedKey.length);
       console.log('API key starts with:', trimmedKey.substring(0, 10) + '...');
 
-      // Test the API key by trying to initialize Google GenAI
-      console.log('Testing Google GenAI...');
-      const { GoogleGenAI } = await import('@google/genai');
-      const ai = new GoogleGenAI(trimmedKey);
-      console.log('Google GenAI initialized successfully');
-      
-      // Try to list models to test the connection
-      console.log('Testing connection by listing models...');
-      const models = await ai.models.list();
-      console.log('Models listed successfully:', models);
-      
-      return { 
-        success: true, 
-        message: `API key is valid! Found ${models.data?.length || 0} available models.` 
-      };
+      if (type === 'openai') {
+        // Test OpenAI API key
+        console.log('Testing OpenAI API...');
+        const { OpenAI } = await import('openai');
+        const openai = new OpenAI({ apiKey: trimmedKey, dangerouslyAllowBrowser: true });
+        console.log('OpenAI initialized successfully');
+
+        // Try to list models to test the connection
+        console.log('Testing connection by listing models...');
+        const models = await openai.models.list();
+        console.log('Models listed successfully:', models);
+
+        return {
+          success: true,
+          message: `OpenAI API key is valid! Found ${models.data?.length || 0} available models.`
+        };
+      } else {
+        // Test Gemini API key
+        console.log('Testing Google GenAI...');
+        const { GoogleGenAI } = await import('@google/genai');
+        const ai = new GoogleGenAI(trimmedKey);
+        console.log('Google GenAI initialized successfully');
+
+        // Try to list models to test the connection
+        console.log('Testing connection by listing models...');
+        const models = await ai.models.list();
+        console.log('Models listed successfully:', models);
+
+        return {
+          success: true,
+          message: `Gemini API key is valid! Found ${models.data?.length || 0} available models.`
+        };
+      }
     } catch (error) {
       console.error('API key test error details:', {
         message: error.message,
         stack: error.stack,
         apiKeyLength: apiKey ? apiKey.length : 0,
-        apiKeyStart: apiKey ? apiKey.substring(0, 10) + '...' : 'none'
+        apiKeyStart: apiKey ? apiKey.substring(0, 10) + '...' : 'none',
+        type: type
       });
-      return { 
-        success: false, 
-        message: `API key test failed: ${error.message}` 
+      return {
+        success: false,
+        message: `API key test failed: ${error.message}`
       };
     }
   }

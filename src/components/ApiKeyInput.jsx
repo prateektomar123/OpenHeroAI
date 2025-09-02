@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Key, Eye, EyeOff, AlertCircle, Save, Trash2, Download, Upload, Clock, CheckCircle } from 'lucide-react';
 import apiKeyManager from '../services/apiKeyManager';
 
-export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
+export default function ApiKeyInput({ apiKey, onApiKeyChange, selectedModel, onModelChange }) {
   const [showKey, setShowKey] = useState(false);
   const [isValid, setIsValid] = useState(true);
   const [validationMessage, setValidationMessage] = useState('');
@@ -11,19 +11,34 @@ export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState(null);
 
-  // Load saved API key on component mount
+  // State for both API keys
+  const [geminiKey, setGeminiKey] = useState('');
+  const [openaiKey, setOpenaiKey] = useState('');
+
+  // Load saved API keys on component mount
   useEffect(() => {
-    const savedKey = apiKeyManager.getAPIKey();
-    if (savedKey && savedKey !== apiKey) {
-      onApiKeyChange(savedKey);
+    const savedGeminiKey = apiKeyManager.getAPIKey('gemini');
+    const savedOpenAIKey = apiKeyManager.getAPIKey('openai');
+
+    if (savedGeminiKey) {
+      setGeminiKey(savedGeminiKey);
     }
-  }, []);
+    if (savedOpenAIKey) {
+      setOpenaiKey(savedOpenAIKey);
+    }
+
+    // Set the current API key based on selected model
+    const currentKey = selectedModel === 'openai' ? savedOpenAIKey : savedGeminiKey;
+    if (currentKey && currentKey !== apiKey) {
+      onApiKeyChange(currentKey);
+    }
+  }, [selectedModel]);
 
   // Check if current API key is saved
   useEffect(() => {
-    const savedKey = apiKeyManager.getAPIKey();
+    const savedKey = apiKeyManager.getAPIKey(selectedModel === 'openai' ? 'openai' : 'gemini');
     setIsSaved(savedKey === apiKey);
-  }, [apiKey]);
+  }, [apiKey, selectedModel]);
 
   const validateApiKey = (key) => {
     if (!key) {
@@ -31,8 +46,8 @@ export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
       setValidationMessage('');
       return true;
     }
-    
-    const validation = apiKeyManager.validateAPIKey(key);
+
+    const validation = apiKeyManager.validateAPIKey(key, selectedModel === 'openai' ? 'openai' : 'gemini');
     setIsValid(validation.valid);
     setValidationMessage(validation.error || '');
     return validation.valid;
@@ -41,17 +56,25 @@ export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
   const handleApiKeyChange = (e) => {
     const key = e.target.value;
     onApiKeyChange(key);
+
+    // Update the specific key state
+    if (selectedModel === 'openai') {
+      setOpenaiKey(key);
+    } else {
+      setGeminiKey(key);
+    }
+
     const isValidKey = validateApiKey(key);
-    
+
     // Auto-save after validation
     if (isValidKey) {
-      apiKeyManager.autoSaveAPIKey(key);
+      apiKeyManager.autoSaveAPIKey(key, selectedModel === 'openai' ? 'openai' : 'gemini');
     }
   };
 
   const saveApiKey = () => {
     if (apiKey && validateApiKey(apiKey)) {
-      const success = apiKeyManager.storeAPIKey(apiKey);
+      const success = apiKeyManager.storeAPIKey(apiKey, selectedModel === 'openai' ? 'openai' : 'gemini');
       if (success) {
         setIsSaved(true);
         setShowSavedMessage(true);
@@ -61,14 +84,19 @@ export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
   };
 
   const removeApiKey = () => {
-    apiKeyManager.removeAPIKey();
+    apiKeyManager.removeAPIKey(selectedModel === 'openai' ? 'openai' : 'gemini');
     onApiKeyChange('');
+    if (selectedModel === 'openai') {
+      setOpenaiKey('');
+    } else {
+      setGeminiKey('');
+    }
     setIsSaved(false);
     setShowSavedMessage(false);
   };
 
   const getApiKeyMetadata = () => {
-    return apiKeyManager.getAPIKeyMetadata();
+    return apiKeyManager.getAPIKeyMetadata(selectedModel === 'openai' ? 'openai' : 'gemini');
   };
 
   const exportApiKeys = () => {
@@ -120,7 +148,7 @@ export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
     setTestResult(null);
 
     try {
-      const result = await apiKeyManager.testAPIKey(apiKey);
+      const result = await apiKeyManager.testAPIKey(apiKey, selectedModel === 'openai' ? 'openai' : 'gemini');
       setTestResult({ success: result.success, message: result.message });
     } catch (error) {
       setTestResult({ success: false, message: `Error testing API key: ${error.message}` });
@@ -137,14 +165,48 @@ export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
         <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
           API Configuration
         </h3>
-        <p className="text-sm sm:text-base text-slate-400">Configure your Gemini API key for image transformation</p>
+        <p className="text-sm sm:text-base text-slate-400">Configure your AI API keys for image transformation</p>
+      </div>
+
+      {/* Model Selection */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <label className="text-sm font-semibold text-white">
+            AI Model
+          </label>
+        </div>
+
+        <div className="relative">
+          <select
+            value={selectedModel}
+            onChange={(e) => {
+              const newModel = e.target.value;
+              onModelChange(newModel);
+              // Update the current API key based on the new model
+              const newKey = newModel === 'openai' ? openaiKey : geminiKey;
+              onApiKeyChange(newKey);
+            }}
+            className="block w-full px-4 py-3 border-2 rounded-lg text-white placeholder-slate-400 transition-colors bg-slate-800 border-slate-600 focus:border-blue-500"
+          >
+            <option value="gemini">Google Gemini 2.5 Flash</option>
+            <option value="openai">OpenAI GPT-Image-1</option>
+          </select>
+        </div>
+
+        <div className="text-sm text-slate-400 bg-slate-500/5 border border-slate-500/10 rounded-lg p-3">
+          <p>
+            <strong>Gemini:</strong> Best for image generation and transformation
+            <br />
+            <strong>GPT-Image-1:</strong> Advanced image editing and transformation
+          </p>
+        </div>
       </div>
 
       {/* API Key Input */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <label className="text-sm font-semibold text-white">
-            Gemini API Key
+            {selectedModel === 'openai' ? 'OpenAI' : 'Gemini'} API Key
           </label>
           <div className="flex items-center gap-2">
             {isSaved && (
@@ -200,7 +262,11 @@ export default function ApiKeyInput({ apiKey, onApiKeyChange }) {
 
         {/* Help Text */}
         <div className="text-sm text-slate-400 bg-slate-500/5 border border-slate-500/10 rounded-lg p-3">
-          <p>Get your Gemini API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">Google AI Studio</a></p>
+          {selectedModel === 'openai' ? (
+            <p>Get your OpenAI API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">OpenAI Platform</a></p>
+          ) : (
+            <p>Get your Gemini API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">Google AI Studio</a></p>
+          )}
         </div>
       </div>
 

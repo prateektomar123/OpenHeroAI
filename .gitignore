@@ -1,24 +1,202 @@
-# Logs
-logs
-*.log
+# Dependencies
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Build outputs
+dist/
+dist-ssr/
+build/
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# API Keys and sensitive data
+*.key
+*.pem
+secrets.json
+config/keys.json
+
+# Logs
+logs
+*.log
+logs/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output
+
+# Cache directories
+.cache/
+.parcel-cache/
+.vite/
+.next/
+.nuxt/
+.vuepress/dist
+
+# OS generated files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and Editor files
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Package manager files
+.pnpm-debug.log*
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# JetBrains IDEs
+*.iml
+.idea/
+
+# Local Netlify folder
+.netlify
+
+# Vercel
+.vercel
+
+# Railway
+.railway
+
+# Fly.io
+fly.toml
+
+# Render
+render.yaml
+
+# DigitalOcean
+.dodigitalocean
+
+# Google Cloud
+.gcloud/
+
+# AWS
+.aws/
+serverless.yml
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Supabase
+.supabase/
+
+# PlanetScale
+.pscale/
+
+# Prisma
+.prisma/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Generated files
+generated/
+auto-generated/
+
+# Test results
+test-results/
+playwright-report/
+test-results.xml
+
+# Screenshots and recordings
+screenshots/
+recordings/
+
+# AI/ML model files
+models/
+*.h5
+*.pb
+*.pkl
+*.joblib
+*.model
+
+# API response caches
+.cache/
+*.cache

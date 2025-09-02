@@ -211,6 +211,129 @@
   animation: hero-glow 2s ease-in-out infinite;
 }
 
+/* Image Reveal Animations */
+@keyframes image-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05) rotate(2deg);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(59, 130, 246, 0.3),
+      0 0 40px rgba(139, 92, 246, 0.2),
+      0 0 60px rgba(59, 130, 246, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(59, 130, 246, 0.6),
+      0 0 60px rgba(139, 92, 246, 0.4),
+      0 0 90px rgba(59, 130, 246, 0.2);
+  }
+}
+
+@keyframes particle-explosion {
+  0% {
+    opacity: 1;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(360deg);
+  }
+}
+
+@keyframes border-glow {
+  0%, 100% {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    border-color: rgba(59, 130, 246, 0.8);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+  }
+}
+
+.image-reveal-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-reveal {
+  animation: image-reveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 2;
+}
+
+.image-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.border-glow {
+  animation: border-glow 2s ease-in-out infinite;
+  border: 2px solid transparent;
+}
+
+.particle-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  border-radius: 50%;
+  animation: particle-explosion 1.2s ease-out forwards;
+}
+
+.particle:nth-child(1) { animation-delay: 0s; top: -20px; left: -20px; }
+.particle:nth-child(2) { animation-delay: 0.1s; top: -20px; right: -20px; }
+.particle:nth-child(3) { animation-delay: 0.2s; bottom: -20px; left: -20px; }
+.particle:nth-child(4) { animation-delay: 0.3s; bottom: -20px; right: -20px; }
+.particle:nth-child(5) { animation-delay: 0.4s; top: -30px; left: 0; }
+.particle:nth-child(6) { animation-delay: 0.5s; bottom: -30px; left: 0; }
+.particle:nth-child(7) { animation-delay: 0.6s; top: 0; left: -30px; }
+.particle:nth-child(8) { animation-delay: 0.7s; top: 0; right: -30px; }
+
+/* Success message reveal */
+@keyframes success-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.success-reveal {
+  animation: success-reveal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
 /* Responsive grid adjustments */
 @media (max-width: 640px) {
   .grid {

@@ -1,22 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Wand2, Download, RefreshCw, CheckCircle, AlertCircle, Eye, Info } from 'lucide-react';
 import aiService from '../services/aiService';
 import { superheroMasks } from '../data/superheroMasks';
 
-export default function ImageProcessor({ 
-  selectedImage, 
-  selectedHero, 
+export default function ImageProcessor({
+  selectedImage,
+  selectedHero,
   apiKey,
-  onProcessingComplete 
+  selectedModel = 'gemini',
+  onProcessingComplete
 }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedImage, setProcessedImage] = useState(null);
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState(0);
   const [showMaskDetails, setShowMaskDetails] = useState(false);
+  const [isRevealing, setIsRevealing] = useState(false);
+  const [showParticles, setShowParticles] = useState(false);
 
   const canProcess = selectedImage && selectedHero && apiKey && !isProcessing;
   const heroMask = superheroMasks[selectedHero];
+
+  // Reveal animation effect
+  useEffect(() => {
+    if (processedImage && processedImage.type === 'image') {
+      // Start particle effect immediately
+      setShowParticles(true);
+
+      // Trigger reveal animation after a short delay
+      const revealTimeout = setTimeout(() => {
+        setIsRevealing(true);
+      }, 300);
+
+      // Hide particles after animation completes
+      const particleTimeout = setTimeout(() => {
+        setShowParticles(false);
+      }, 1500);
+
+      return () => {
+        clearTimeout(revealTimeout);
+        clearTimeout(particleTimeout);
+      };
+    } else {
+      setIsRevealing(false);
+      setShowParticles(false);
+    }
+  }, [processedImage]);
 
   // Utility function to clean up old images from localStorage
   const cleanupOldImages = () => {
@@ -76,102 +105,189 @@ export default function ImageProcessor({
       const transformationPrompt = heroMask.transformationPrompt;
       console.log('Processing image with prompt:', transformationPrompt);
       console.log('API key length:', apiKey.length);
-      
-      const result = await aiService.processImageWithPrompt(apiKey, selectedImage, transformationPrompt);
+      console.log('Selected model:', selectedModel);
+
+      // Choose the appropriate AI service method based on selected model
+      let result;
+      if (selectedModel === 'openai') {
+        result = await aiService.processImageWithPromptOpenAI(apiKey, selectedImage, transformationPrompt);
+      } else {
+        result = await aiService.processImageWithPrompt(apiKey, selectedImage, transformationPrompt);
+      }
       
       clearInterval(progressInterval);
       setProgress(100);
 
-      // Handle the Gemini result
-      console.log('Full Gemini response:', result);
-      console.log('Response candidates:', result.candidates);
-      console.log('First candidate content:', result.candidates[0].content);
-      console.log('Content parts:', result.candidates[0].content.parts);
-      
-      if (result.candidates && result.candidates[0].content.parts) {
-        const parts = result.candidates[0].content.parts;
-        let imageFound = false;
-        
-        for (const part of parts) {
-          console.log('Processing part:', part);
-          
-          // Check for inlineData (base64 image) - this is what Gemini returns
-          if (part.inlineData) {
-            console.log('Found inlineData:', part.inlineData);
-            // Convert base64 to blob URL for display
-            const byteCharacters = atob(part.inlineData.data);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: part.inlineData.mimeType });
-            const imageUrl = URL.createObjectURL(blob);
-            
-            // Clean up old images first to free up space
-            cleanupOldImages();
+      // Handle the AI result (different structure for Gemini vs OpenAI)
+      console.log('Full AI response:', result);
 
-            // Try to store image in local storage for download (with error handling for large images)
-            const imageKey = `generated_image_${Date.now()}`;
-            let storageKey = null;
-
-            try {
-              // Check if the data is too large before attempting to store
-              const dataSize = part.inlineData.data.length * 0.75; // Base64 is ~33% larger than binary
-              if (dataSize < 4 * 1024 * 1024) { // Less than 4MB to be safe
-                localStorage.setItem(imageKey, part.inlineData.data);
-                localStorage.setItem(`${imageKey}_mime`, part.inlineData.mimeType);
-                storageKey = imageKey;
-              } else {
-                console.warn('Image too large for localStorage, skipping storage but keeping blob URL for download');
-              }
-            } catch (storageError) {
-              if (storageError.name === 'QuotaExceededError') {
-                console.warn('localStorage quota exceeded, image will not be cached for download but download will still work');
-              } else {
-                console.error('Error storing image:', storageError);
-              }
-            }
+      if (selectedModel === 'openai') {
+        // Handle OpenAI response structure
+        if (result.success) {
+          if (result.useDirectUrl && result.imageUrl) {
+            // Handle direct URL response (fallback when fetch fails)
+            console.log('Using direct URL for OpenAI image:', result.imageUrl);
 
             setProcessedImage({
               type: 'image',
-              url: imageUrl,
+              url: result.imageUrl,
               superheroName: heroMask.name,
               maskDetails: heroMask,
-              storageKey: storageKey,
-              base64Data: storageKey ? null : part.inlineData.data, // Keep base64 data if not stored
-              mimeType: part.inlineData.mimeType,
-              largeImageWarning: !storageKey // Flag to show warning about large image
+              storageKey: null,
+              base64Data: null,
+              mimeType: result.mimeType || 'image/png',
+              largeImageWarning: false,
+              isDirectUrl: true
             });
-            imageFound = true;
-            break;
+          } else if (result.imageData) {
+            // Handle base64 data response
+            try {
+              // Convert base64 to blob URL for display
+              const byteCharacters = atob(result.imageData);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              const blob = new Blob([byteArray], { type: result.mimeType || 'image/png' });
+              const imageUrl = URL.createObjectURL(blob);
+
+              // Clean up old images first to free up space
+              cleanupOldImages();
+
+              // Try to store image in local storage for download
+              const imageKey = `generated_image_${Date.now()}`;
+              let storageKey = null;
+
+              try {
+                // Check if the data is too large before attempting to store
+                const dataSize = result.imageData.length * 0.75; // Base64 is ~33% larger than binary
+                if (dataSize < 4 * 1024 * 1024) { // Less than 4MB to be safe
+                  localStorage.setItem(imageKey, result.imageData);
+                  localStorage.setItem(`${imageKey}_mime`, result.mimeType || 'image/png');
+                  storageKey = imageKey;
+                } else {
+                  console.warn('Image too large for localStorage, skipping storage but keeping blob URL for download');
+                }
+              } catch (storageError) {
+                if (storageError.name === 'QuotaExceededError') {
+                  console.warn('localStorage quota exceeded, image will not be cached for download but download will still work');
+                } else {
+                  console.error('Error storing image:', storageError);
+                }
+              }
+
+              setProcessedImage({
+                type: 'image',
+                url: imageUrl,
+                superheroName: heroMask.name,
+                maskDetails: heroMask,
+                storageKey: storageKey,
+                base64Data: storageKey ? null : result.imageData,
+                mimeType: result.mimeType || 'image/png',
+                largeImageWarning: !storageKey
+              });
+            } catch (conversionError) {
+              console.error('Error converting OpenAI image data:', conversionError);
+              throw new Error('Failed to process generated image');
+            }
+          } else {
+            throw new Error('OpenAI processing failed to generate image');
           }
-          
-          // Check for text content
-          if (part.text) {
-            console.log('Found text part:', part.text);
-          }
+        } else {
+          throw new Error(result.error || 'OpenAI processing failed');
         }
-        
-        // If no image was found, show text response
-        if (!imageFound) {
-          console.log('No image found, showing text response');
+      } else {
+        // Handle Gemini response structure
+        console.log('Response candidates:', result.candidates);
+        console.log('First candidate content:', result.candidates[0].content);
+        console.log('Content parts:', result.candidates[0].content.parts);
+
+        if (result.candidates && result.candidates[0].content.parts) {
+          const parts = result.candidates[0].content.parts;
+          let imageFound = false;
+
+          for (const part of parts) {
+            console.log('Processing part:', part);
+
+            // Check for inlineData (base64 image) - this is what Gemini returns
+            if (part.inlineData) {
+              console.log('Found inlineData:', part.inlineData);
+              // Convert base64 to blob URL for display
+              const byteCharacters = atob(part.inlineData.data);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              const blob = new Blob([byteArray], { type: part.inlineData.mimeType });
+              const imageUrl = URL.createObjectURL(blob);
+
+              // Clean up old images first to free up space
+              cleanupOldImages();
+
+              // Try to store image in local storage for download (with error handling for large images)
+              const imageKey = `generated_image_${Date.now()}`;
+              let storageKey = null;
+
+              try {
+                // Check if the data is too large before attempting to store
+                const dataSize = part.inlineData.data.length * 0.75; // Base64 is ~33% larger than binary
+                if (dataSize < 4 * 1024 * 1024) { // Less than 4MB to be safe
+                  localStorage.setItem(imageKey, part.inlineData.data);
+                  localStorage.setItem(`${imageKey}_mime`, part.inlineData.mimeType);
+                  storageKey = imageKey;
+                } else {
+                  console.warn('Image too large for localStorage, skipping storage but keeping blob URL for download');
+                }
+              } catch (storageError) {
+                if (storageError.name === 'QuotaExceededError') {
+                  console.warn('localStorage quota exceeded, image will not be cached for download but download will still work');
+                } else {
+                  console.error('Error storing image:', storageError);
+                }
+              }
+
+              setProcessedImage({
+                type: 'image',
+                url: imageUrl,
+                superheroName: heroMask.name,
+                maskDetails: heroMask,
+                storageKey: storageKey,
+                base64Data: storageKey ? null : part.inlineData.data, // Keep base64 data if not stored
+                mimeType: part.inlineData.mimeType,
+                largeImageWarning: !storageKey // Flag to show warning about large image
+              });
+              imageFound = true;
+              break;
+            }
+
+            // Check for text content
+            if (part.text) {
+              console.log('Found text part:', part.text);
+            }
+          }
+
+          // If no image was found, show text response
+          if (!imageFound) {
+            console.log('No image found, showing text response');
+            setProcessedImage({
+              type: 'text',
+              content: result.candidates[0].content.parts[0].text || 'Image processing completed',
+              superheroName: heroMask.name,
+              maskDetails: heroMask
+            });
+          }
+        } else {
+          // Fallback for unexpected response structure
+          console.log('Unexpected response structure, showing raw response');
           setProcessedImage({
             type: 'text',
-            content: result.candidates[0].content.parts[0].text || 'Image processing completed',
+            content: `Processing completed. Response: ${JSON.stringify(result, null, 2)}`,
             superheroName: heroMask.name,
             maskDetails: heroMask
           });
         }
-      } else {
-        // Fallback for unexpected response structure
-        console.log('Unexpected response structure, showing raw response');
-        setProcessedImage({
-          type: 'text',
-          content: `Processing completed. Response: ${JSON.stringify(result, null, 2)}`,
-          superheroName: heroMask.name,
-          maskDetails: heroMask
-        });
       }
 
       if (onProcessingComplete) {
@@ -190,6 +306,18 @@ export default function ImageProcessor({
   const downloadImage = () => {
     if (processedImage && processedImage.type === 'image') {
       try {
+        // Handle direct URL case (OpenAI fallback)
+        if (processedImage.isDirectUrl) {
+          const link = document.createElement('a');
+          link.href = processedImage.url;
+          link.target = '_blank';
+          link.download = `openhero-${selectedHero}-${Date.now()}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          return;
+        }
+
         let blob;
 
         // First, try to get the stored image data from local storage
@@ -222,7 +350,7 @@ export default function ImageProcessor({
         }
         // Fallback: try to fetch the blob from the displayed image URL
         else {
-          console.log('No stored data, using blob URL for download');
+          console.log('No stored data, using image URL for download');
           const link = document.createElement('a');
           link.href = processedImage.url;
           link.download = `openhero-${selectedHero}-${Date.now()}.png`;
@@ -378,23 +506,34 @@ export default function ImageProcessor({
       {/* Results Display */}
       {processedImage && (
         <div className="space-y-4">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 dark:bg-green-900 dark:border-green-700">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 dark:bg-green-900 dark:border-green-700 success-reveal">
             <div className="flex items-center space-x-2 text-green-600 dark:text-green-100">
               <CheckCircle className="w-5 h-5" />
               <span className="font-medium">Transformation Complete!</span>
             </div>
             <p className="text-green-600 dark:text-green-200 mt-1">
-              Your image has been transformed into {processedImage.superheroName}!
+              Your image has been transformed into {processedImage.superheroName}! 🦸‍♂️✨
             </p>
           </div>
 
           {processedImage.type === 'image' ? (
             <div className="space-y-4">
-              <img
-                src={processedImage.url}
-                alt={`${processedImage.superheroName} transformation`}
-                className="w-full rounded-xl shadow-lg dark:bg-gray-700"
-              />
+              <div className="image-reveal-container border-glow rounded-xl">
+                {showParticles && (
+                  <div className="particle-container">
+                    {[...Array(8)].map((_, i) => (
+                      <div key={i} className="particle" />
+                    ))}
+                  </div>
+                )}
+                <img
+                  src={processedImage.url}
+                  alt={`${processedImage.superheroName} transformation`}
+                  className={`w-full rounded-xl shadow-lg dark:bg-gray-700 ${
+                    isRevealing ? 'image-reveal image-glow' : 'opacity-0'
+                  }`}
+                />
+              </div>
 
               {/* Large image warning */}
               {processedImage.largeImageWarning && (

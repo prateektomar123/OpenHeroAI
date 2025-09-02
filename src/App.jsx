@@ -10,6 +10,7 @@ function App() {
   const [selectedHero, setSelectedHero] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [apiKey, setApiKey] = useState('');
+  const [selectedModel, setSelectedModel] = useState('gemini');
   const [currentStep, setCurrentStep] = useState(1);
 
   // Directly apply dark class to HTML element
@@ -19,7 +20,7 @@ function App() {
   const steps = [
     { id: 1, title: 'Choose Hero', icon: Shield, description: 'Select your superhero' },
     { id: 2, title: 'Upload Image', icon: Star, description: 'Upload your photo' },
-    { id: 3, title: 'API Setup', icon: Zap, description: 'Configure Gemini API key' },
+    { id: 3, title: 'API Setup', icon: Zap, description: 'Configure AI API key' },
     { id: 4, title: 'Transform', icon: Zap, description: 'Process image' }
   ];
 
@@ -78,6 +79,8 @@ function App() {
           <ApiKeyInput
             apiKey={apiKey}
             onApiKeyChange={setApiKey}
+            selectedModel={selectedModel}
+            onModelChange={setSelectedModel}
           />
         );
       case 4:
@@ -86,6 +89,7 @@ function App() {
             selectedImage={selectedImage}
             selectedHero={selectedHero}
             apiKey={apiKey}
+            selectedModel={selectedModel}
             onProcessingComplete={(result) => {
               console.log('Processing complete:', result);
             }}
@@ -208,7 +212,7 @@ function App() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="text-center">
             <p className="text-slate-400 text-xs sm:text-sm">
-              OpenHero AI - Powered by Gemini AI
+              OpenHero AI - Powered by Gemini & GPT-Image-1
             </p>
           </div>
         </div>

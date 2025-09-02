@@ -27,11 +27,11 @@ Open http://localhost:5173 in your browser
 
 #### Step 3: Configure API
 
-- Choose between OpenRouter (recommended) or Gemini
+- Choose between Gemini or GPT-Image-1
 - Enter your API key
 - Get API keys from:
-  - OpenRouter: https://openrouter.ai
   - Gemini: https://makersuite.google.com/app/apikey
+  - GPT-Image-1: https://platform.openai.com/api-keys
 
 #### Step 4: Transform Image
 
@@ -51,9 +51,9 @@ For testing, you can use:
 
 ### 4. Expected Results
 
-- **OpenRouter API**: Returns text description of transformation
-- **Gemini API**: May return generated image (if supported)
-- Both provide detailed feedback on the transformation process
+- **Gemini API**: Returns generated superhero transformation image
+- **GPT-Image-1 API**: Returns edited superhero transformation image
+- Both provide actual transformed images (not just text descriptions)
 
 ### 5. Troubleshooting
 
